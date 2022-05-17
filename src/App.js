@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {Box, TextField, Typography} from '@mui/material';
+import {Box, TextField, Typography, Button} from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -47,15 +47,16 @@ function App() {
           <TextField id="email" label="Email" variant="outlined" margin="normal" required fullWidth/> 
 
           <Typography variant="button" display="block" gutterBottom> <u>Phone Number</u> </Typography>
-          <TextField id="phonenumber" label="Phone Number" variant="outlined" margin="normal" required fullWidth/> 
+          <TextField id="phonenumber" label="Phone Number" variant="outlined" margin="normal" type="number" required fullWidth/> 
 
           <Typography variant="button" display="block" gutterBottom> <u>Address</u> </Typography>
           <TextField id="address" label="Address" variant="outlined" margin="normal" required fullWidth/> 
-        
+          <Button type="submit" variant="contained">Submit</Button>
       </Box>
+      
     </form>
 
-
+    
     </div>
   );
 }
