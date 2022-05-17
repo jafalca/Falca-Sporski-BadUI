@@ -1,10 +1,8 @@
 import * as React from 'react';
-import {Box, TextField, Typography, Divider} from '@mui/material';
+import {Box, TextField, Typography} from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-// import { Calendar } from 'mui-date-picker';
-// import './App.css';
 
 function App() {
   const [value, setValue] = React.useState(null);
