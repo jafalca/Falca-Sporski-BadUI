@@ -66,7 +66,7 @@ function App() {
   }
 
   function turingTest(){
-    let probabilitySuccess = .33
+    let probabilitySuccess = .28
     let rand = Math.random()
     if(rand > probabilitySuccess){
       counterMeasure()
@@ -87,7 +87,7 @@ function App() {
       else{
         setRobotCheck(true)
       }
-    },2000)
+    },1500)
   }
 
   const modal_rgb_style = {
