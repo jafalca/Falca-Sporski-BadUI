@@ -16,7 +16,7 @@ import IconButton from '@mui/material/IconButton';
 
 function App() {
 
-  const ids = ['fname', 'lname','dob', 'email', 'phonenumber', 'address', 'consideration']
+  const ids = ['fname', 'lname', 'email', 'address', 'consideration']
   
   const [pickerColor, setColor] = React.useState("#ffffff")
   const [dob, setDob] = React.useState("00/00/00")
@@ -29,6 +29,7 @@ function App() {
   const [showTuringFail, setTuringFail] = React.useState(false)
   const [missingNotification, setMissingNotification] = React.useState(false)
   const [successScreen, setSuccessScreen] = React.useState(false)
+  const [firstTime, setFirstTime] = React.useState(true)
 
   function init(){
     let numbers = []
@@ -64,12 +65,13 @@ function App() {
     }
     handleOpenSuccess()
   }
-  let firstTime = true
+  
   function turingTest(){
+    console.log(firstTime)
     let probabilitySuccess = .33
     let rand = Math.random()
     if((rand > probabilitySuccess) || firstTime){
-      firstTime = false
+      setFirstTime(false)
       counterMeasure()
       handleOpenTuring()
       return false
