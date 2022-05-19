@@ -302,8 +302,11 @@ function App() {
       <Typography variant="h3" component="h4" style={{display: 'flex',  justifyContent:'center', color: "#FFFFFF"}} >
          Thank you for your personal information!
       </Typography>
-      <Typography variant="h5" component="h4" style={{display: 'flex',  justifyContent:'center', color: "#FFFFFF"}}>
+      <Typography variant="h5" component="h5" style={{display: 'flex',  justifyContent:'center', color: "#FFFFFF"}}>
       We will get back to you if we feel like it
+      </Typography>
+      <Typography variant="caption" component="caption" style={{display: 'flex',  justifyContent:'center', color: "#FFFFFF"}}>
+      Your information will be sold to the highest bidder
       </Typography>
       </Box>
     </Modal >
