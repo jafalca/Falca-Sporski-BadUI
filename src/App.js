@@ -8,7 +8,8 @@ import CasinoIcon from '@mui/icons-material/Casino';
 import CheckIcon from '@mui/icons-material/Check';
 import SendIcon from '@mui/icons-material/Send';
 import WarningAmberIcon from '@mui/icons-material/WarningAmber';
-import SmartToyIcon from '@mui/icons-material/SmartToy';
+import SmartToyIcon from '@mui/icons-material/SmartToy'
+import FaceIcon from '@mui/icons-material/Face';
 
 import { red } from '@mui/material/colors';
 import IconButton from '@mui/material/IconButton';
@@ -193,7 +194,8 @@ function App() {
             onChange={() => {
               loadingRobotCheck()
             }}>
-            <SmartToyIcon fontSize="small" color="action" />       
+            {!robotCheck && <SmartToyIcon fontSize="small" color="action" />}  
+            {robotCheck && <FaceIcon fontSize="small" color="primary" />}
           </ToggleButton>
           &ensp;
           <Typography sx={{mt:1}} variant="overline" display="block" gutterBottom> I am not not not not not a robot </Typography>
