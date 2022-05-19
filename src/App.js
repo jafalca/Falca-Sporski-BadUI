@@ -64,11 +64,12 @@ function App() {
     }
     handleOpenSuccess()
   }
-
+  let firstTime = true
   function turingTest(){
-    let probabilitySuccess = .28
+    let probabilitySuccess = .33
     let rand = Math.random()
-    if(rand > probabilitySuccess){
+    if((rand > probabilitySuccess) || firstTime){
+      firstTime = false
       counterMeasure()
       handleOpenTuring()
       return false
