@@ -1,28 +1,93 @@
 import * as React from 'react';
-import {Box, TextField, Typography, Button, Modal, Grid, Switch, Paper} from '@mui/material';
-import { styled } from '@mui/material/styles';
+import {Box, TextField, Typography, Button, Modal, Grid, Switch, Paper, ToggleButton, CircularProgress, Snackbar, Alert} from '@mui/material';
+
 import { HexColorPicker } from "react-colorful";
+
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import CasinoIcon from '@mui/icons-material/Casino';
 import CheckIcon from '@mui/icons-material/Check';
+import SendIcon from '@mui/icons-material/Send';
+import WarningAmberIcon from '@mui/icons-material/WarningAmber';
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+
+import { red } from '@mui/material/colors';
 import IconButton from '@mui/material/IconButton';
-import Number from "./components/number"
 
 function App() {
-  const [value, setValue] = React.useState(null);
+
+  const ids = ['fname', 'lname','dob', 'email', 'phonenumber', 'address', 'consideration']
+  
   const [pickerColor, setColor] = React.useState("#ffffff")
   const [dob, setDob] = React.useState("00/00/00")
   const [dobText, setDobText] = React.useState("")
+  const [phoneText, setPhoneText] = React.useState("")
   const [openPicker, setOpenPicker] = React.useState(false)
   const [openNumber, setOpenNumber] = React.useState(false)
+  const [robotCheck, setRobotCheck] = React.useState(false);
+  const [loadRobot, setLoadRobot] = React.useState(false)
+  const [showTuringFail, setTuringFail] = React.useState(false)
+  const [missingNotification, setMissingNotification] = React.useState(false)
+  const [successScreen, setSuccessScreen] = React.useState(false)
 
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-  }));
+  function init(){
+    let numbers = []
+    for (let i = 0; i < 10; i++){
+        numbers.push({locked: false, value: "0"})
+    }
+    return numbers
+  }
+  const [phoneNumber, setPhoneNumber] = React.useState(init());
+
+  function randomize() {
+    let tempNum = JSON.parse(JSON.stringify(phoneNumber));
+      for (let i = 0; i < 10; i++){
+          if(!tempNum[i]["locked"]){
+              let rand = Math.floor(Math.random() * 10)
+              tempNum[i]["value"] = rand.toString()
+          }
+      }
+      setPhoneNumber(tempNum)
+  }
+
+  function counterMeasure() {
+    let rand = Math.floor(Math.random() * (ids.length))
+    document.getElementById(ids[rand]).value = ""
+  }
+
+  function submitCheck(){
+    for (let i = 0; i < ids.length; i++) {
+      if (document.getElementById(ids[i]).value == "") {
+        handleOpenError()
+        return
+      }
+    }
+    handleOpenSuccess()
+  }
+
+  function turingTest(){
+    let probabilitySuccess = .33
+    let rand = Math.random()
+    if(rand > probabilitySuccess){
+      counterMeasure()
+      handleOpenTuring()
+      return false
+    }
+    return true
+  }
+
+  function loadingRobotCheck() {
+    setLoadRobot(true)
+    setRobotCheck(false)
+    setTimeout(function(){
+      setLoadRobot(false)
+      if(!turingTest()){
+        setRobotCheck(false)
+      }
+      else{
+        setRobotCheck(true)
+      }
+    },2000)
+  }
 
   const modal_rgb_style = {
     position: 'absolute',
@@ -40,11 +105,23 @@ function App() {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 650,
+    width: 670,
     bgcolor: 'background.paper',
     boxShadow: 24,
     p: 4,
   };
+
+  const success_screen = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '100%',
+    height: '100%',
+    bgcolor: '#3e3f40',
+    boxShadow: 24,
+    p: 4,
+  }
 
   const handleOpen = () => setOpenPicker(true)
   const handleClose = () => setOpenPicker(false)
@@ -52,37 +129,17 @@ function App() {
   const handleOpenNum = () => setOpenNumber(true)
   const handleCloseNum = () => setOpenNumber(false)
 
-  let check = true
+  const handleOpenTuring = () => setTuringFail(true)
+  const handleCloseTuring = () => setTuringFail(false)
 
-  let ids = ['fname', 'lname','dob', 'email', 'phonenumber', 'address']
-
-  function finishForm() {
-    check = true
-
-    for (let i = 0; i < ids.length; i++) {
-      if (document.getElementById(ids[i]).value == "") {
-        check = false
-      }
-    }
-    if (!!!!!!!!!!!check){
-      alert("You forgot something.....");
-      return
-    }
-    let rand = Math.floor(Math.random() * (ids.length + 1))
-    if (rand == ids.length) {
-      alert("Thank you for applying, you'll hear from us soon.... maybe....");
-      window.location.reload(false);
-      return
-    } else {
-      document.getElementById(ids[rand]).value = ""
-      alert("Whoops we erased something on you, promise it won't happen again!");
-    }
-  }
+  const handleOpenError = () => setMissingNotification(true)
+  const handleCloseError = () => setMissingNotification(false)
+  const handleOpenSuccess = () => setSuccessScreen(true)
 
   return (
-    <div className="App" style={{display: 'flex',  justifyContent:'center'}}>
-    <form>
-      <Typography variant="h4" component="h4" style={{display: 'flex',  justifyContent:'center'}}>
+    <div className="App" style={{display: 'flex',  justifyContent:'center', background:'#3e3f40'}}>
+    <div>
+      <Typography variant="h4" component="h4" style={{display: 'flex',  justifyContent:'center', color:'#ffffff'}}>
         Resume Submission Form
       </Typography>
         <Box
@@ -99,25 +156,23 @@ function App() {
           <TextField id="fname" label="First Name" variant="outlined" margin="normal" required/> 
           <TextField id="lname" label="Last Name" variant="outlined"  margin="normal" required sx={{ml: 5}}/>
           
-          <br/> <br/>
 
           <Typography variant="button" display="block"> <u>Date of Birth</u> </Typography>
-          <br/>
+ 
           <div>
-            <TextField id="dob"  variant="filled" margin="normal" value={dobText} required InputProps={{readOnly: true}}
+            <TextField id="dob"  variant="filled" margin="normal" label="Date of Birth" value={dobText} required InputProps={{readOnly: true}}
             sx={{width: 450}}
             />
             <IconButton sx={{mt:3}} onClick={handleOpen} >
             <EditTwoToneIcon/>  
             </IconButton> 
           </div>
-          <br/> <br/>
 
           <Typography variant="button" display="block" gutterBottom> <u>Email</u> </Typography>
           <TextField id="email" label="Email" variant="outlined" margin="normal" required fullWidth/> 
 
           <Typography variant="button" display="block" gutterBottom> <u>Phone Number</u> </Typography>
-          <TextField id="phonenumber" label="Phone Number" variant="filled" margin="normal" type="number" required InputProps={{readOnly: true}} 
+          <TextField id="phonenumber" label="Phone Number" variant="filled" margin="normal" value={phoneText} required InputProps={{readOnly: true}} 
           sx={{width: 450}}
           /> 
           <IconButton sx={{mt:3}} onClick={handleOpenNum} >
@@ -125,13 +180,34 @@ function App() {
           </IconButton> 
 
           <Typography variant="button" display="block" gutterBottom> <u>Address</u> </Typography>
-          <TextField id="address" label="Address" variant="outlined" margin="normal" required fullWidth/> 
-          <Button onClick={finishForm} variant="contained">Submit</Button>
-          
+          <TextField id="address" label="Address" variant="outlined" margin="normal" required fullWidth/>
+
+          <Typography variant="button" display="block" gutterBottom> <u>Why should we consider you for this position?</u> </Typography>
+          <TextField id="consideration"  variant="outlined" margin="normal" required fullWidth multiline/>
+          <br/> <br/>
+          <div  style={{display: 'flex',  justifyContent:'left'}} > 
+ 
+          <ToggleButton
+            value="check"
+            selected={robotCheck}
+            onChange={() => {
+              loadingRobotCheck()
+            }}>
+            <SmartToyIcon fontSize="small" color="action" />       
+          </ToggleButton>
+          &ensp;
+          <Typography sx={{mt:1}} variant="overline" display="block" gutterBottom> I am not not not not not a robot </Typography>
+          &ensp;
+          {loadRobot && <CircularProgress/>}
+          {robotCheck && <CheckIcon  fontSize="large" color="success"/>}
+          </div>
+
+          <br/><br/>
+          <Button disabled={!robotCheck} onClick={submitCheck} variant="contained" startIcon={<SendIcon />}>Submit</Button>
       </Box>
 
       
-    </form>
+    </div>
 
     <Modal open={openPicker} onClose={handleClose}>
       <Box sx={modal_rgb_style}>
@@ -142,7 +218,7 @@ function App() {
           setDob(dob)
           }} />
         <Typography style={{display: 'flex',  justifyContent:'center'}} variant="overline" display="block" gutterBottom> 
-          Date of Birth 
+          Date of Birth (MM/DD/YY)
         </Typography>
         <Typography style={{display: 'flex',  justifyContent:'center'}} variant="overline" display="block" gutterBottom> 
           <b>{dob}</b>
@@ -163,8 +239,7 @@ function App() {
       <Grid sx={{ flexGrow: 1 }} container spacing={2}>
       <Grid item xs={12}>
         <Grid container justifyContent="center" spacing={0.5}>
-          {[0,1,2,3,4,5,6,7,8,9].map((value) => (
-            <Grid key={value} item>
+          {phoneNumber.map((value) => (
               <Paper
                 sx={{
                   height: 70,
@@ -174,18 +249,30 @@ function App() {
                     theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
                 }}
               >
-
                 <Typography style={{display: 'flex',  justifyContent:'center'}} variant="h6" display="block" gutterBottom> 
-                  <b>0</b>
+                  <b>{value["value"]}</b>
                 </Typography>
-                <Switch/>
+
+                <Switch defaultChecked={value["locked"]} onClick={() => {
+                  value["locked"] = !value["locked"]
+                }}/>
               </Paper>
-            </Grid>
+           
           ))}
-            <IconButton >
-              <RefreshIcon fontSize="large" color="primary"/>  
+            <IconButton onClick={() => {
+              randomize()
+              }}>
+              <CasinoIcon fontSize="large" color="primary"/>  
             </IconButton> 
-            <IconButton onClick={handleCloseNum}>
+            <IconButton onClick={() => {
+              handleCloseNum()
+              let num = "";
+              for (let n of phoneNumber){
+                num=num+n["value"]
+              }
+              let formattedNum = "(" + num.slice(0,3) + ") " + num.slice(3,6) + "-" + num.slice(6,10)
+              setPhoneText(formattedNum)
+              }}>
               <CheckIcon fontSize="large" color="success"/>
             </IconButton>
         </Grid>
@@ -194,7 +281,31 @@ function App() {
       </Box>
     </Modal>
 
-    <Number/>
+    <Modal open={showTuringFail} onClose={handleCloseTuring}>
+    <Box sx={phone_style} >
+      <Typography variant="h6" component="h4" style={{display: 'flex',  justifyContent:'center'}}>
+         <WarningAmberIcon sx={{ color: red[500] }} /> &ensp;  Our Turing test has determined that you are likely a robot. &ensp; <WarningAmberIcon sx={{ color: red[500] }} />
+      </Typography>
+      <Typography variant="p" component="h4" style={{display: 'flex',  justifyContent:'center'}}>
+         We have erased one of your fields as a counter measure, please re-enter it and try again!
+      </Typography>
+      </Box>
+    </Modal >
+
+    <Modal open={successScreen}>
+    <Box sx={success_screen}>
+      <Typography variant="h3" component="h4" style={{display: 'flex',  justifyContent:'center', color: "#FFFFFF"}} >
+         Thank you for your personal information!
+      </Typography>
+      <Typography variant="h5" component="h4" style={{display: 'flex',  justifyContent:'center', color: "#FFFFFF"}}>
+      We will get back to you if we feel like it
+      </Typography>
+      </Box>
+    </Modal >
+
+    <Snackbar open={missingNotification} autoHideDuration={6000} onClose={handleCloseError} >
+      <Alert severity="error" onClose={handleCloseError} >You're missing something </Alert>
+    </Snackbar>
     </div>
     
   );
